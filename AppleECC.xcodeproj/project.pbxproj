@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1891B4F02FF5A47E008346E4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1891B4EF2FF5A47E008346E4 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1891B4A72FF306B6008346E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		1891B4992FF306B4008346E4 /* AppleECC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppleECC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4A62FF306B6008346E4 /* AppleECCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4B02FF306B6008346E4 /* AppleECCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1891B4EF2FF5A47E008346E4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +84,7 @@
 				1891B4A92FF306B6008346E4 /* AppleECCTests */,
 				1891B4B32FF306B6008346E4 /* AppleECCUITests */,
 				1891B49A2FF306B4008346E4 /* Products */,
+				1891B4EF2FF5A47E008346E4 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1891B4F02FF5A47E008346E4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
