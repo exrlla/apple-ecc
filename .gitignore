@@ -2,4 +2,4 @@
 *.pem
 *.xcconfig
 .AppleECC.xcconfig
-AppleECC
+Config.xcconfig

@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct AppleECCApp: App {
     var body: some Scene {
         WindowGroup {
             RootTabView()
+            
         }
+        .modelContainer(for: Sighting.self)
     }
 }

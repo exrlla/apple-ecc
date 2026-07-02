@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1891B4F02FF5A47E008346E4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1891B4EF2FF5A47E008346E4 /* .gitignore */; };
 		1891B4F22FF5AC2E008346E4 /* AppleECC.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1891B4F12FF5AC2E008346E4 /* AppleECC.xcconfig */; };
+		1891B5112FF705BE008346E4 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1891B5102FF705BE008346E4 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,11 +35,25 @@
 		1891B4B02FF306B6008346E4 /* AppleECCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4EF2FF5A47E008346E4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1891B4F12FF5AC2E008346E4 /* AppleECC.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppleECC.xcconfig; sourceTree = "<group>"; };
+		1891B5102FF705BE008346E4 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1891B5132FF7067F008346E4 /* Exceptions for "AppleECC" folder in "AppleECC" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 1891B4982FF306B4008346E4 /* AppleECC */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1891B49B2FF306B4008346E4 /* AppleECC */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1891B5132FF7067F008346E4 /* Exceptions for "AppleECC" folder in "AppleECC" target */,
+			);
 			path = AppleECC;
 			sourceTree = "<group>";
 		};
@@ -87,6 +102,7 @@
 				1891B4B32FF306B6008346E4 /* AppleECCUITests */,
 				1891B49A2FF306B4008346E4 /* Products */,
 				1891B4F12FF5AC2E008346E4 /* AppleECC.xcconfig */,
+				1891B5102FF705BE008346E4 /* Config.xcconfig */,
 				1891B4EF2FF5A47E008346E4 /* .gitignore */,
 			);
 			sourceTree = "<group>";
@@ -221,6 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1891B5112FF705BE008346E4 /* Config.xcconfig in Resources */,
 				1891B4F22FF5AC2E008346E4 /* AppleECC.xcconfig in Resources */,
 				1891B4F02FF5A47E008346E4 /* .gitignore in Resources */,
 			);
@@ -282,6 +299,7 @@
 /* Begin XCBuildConfiguration section */
 		1891B4B82FF306B6008346E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1891B5102FF705BE008346E4 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -345,6 +363,7 @@
 		};
 		1891B4B92FF306B6008346E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1891B5102FF705BE008346E4 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -408,6 +427,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppleECC/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -439,6 +459,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppleECC/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -6,23 +6,28 @@
 import SwiftUI
 import PhotosUI
 
+struct IdentifiableImage: Identifiable {
+    let id = UUID()
+    let image: UIImage
+}
+
 struct CaptureView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    // Captured media
+    @State private var capturedImageItem: IdentifiableImage?
+    
     // Camera
     @State private var showCamera = false
-    @State private var cameraImage: UIImage?
     
     // Photo library
     @State private var photoPickerItem: PhotosPickerItem?
-    @State private var libraryImage: UIImage?
     
     // Audio
     @State private var showAudioRecorder = false
     
-    // Pass result back to GardenViewModel
-    var onImageCaptured: ((UIImage) -> Void)?
+    // Audio callback
     var onAudioCaptured: ((URL) -> Void)?
     
     var body: some View {
@@ -117,9 +122,8 @@ struct CaptureView: View {
         // MARK: - Camera sheet
         .fullScreenCover(isPresented: $showCamera) {
             CameraPickerView { image in
-                cameraImage = image
-                onImageCaptured?(image)
-                dismiss()
+                capturedImageItem = IdentifiableImage(image: image)
+                showCamera = false
             }
         }
         // MARK: - Audio sheet
@@ -129,14 +133,19 @@ struct CaptureView: View {
                 dismiss()
             }
         }
+        // MARK: - Identification result sheet
+        .sheet(item: $capturedImageItem) { item in
+            IdentificationResultView(image: item.image) {
+                capturedImageItem = nil
+                dismiss()
+            }
+        }
         // MARK: - Library photo loaded
         .onChange(of: photoPickerItem) { _, newItem in
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self),
                    let image = UIImage(data: data) {
-                    libraryImage = image
-                    onImageCaptured?(image)
-                    dismiss()
+                    capturedImageItem = IdentifiableImage(image: image)
                 }
             }
         }
