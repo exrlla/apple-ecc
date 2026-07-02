@@ -12,7 +12,7 @@ struct RootTabView: View {
         TabView {
             CaptureView()
                 .tabItem{
-                    Image(systemName: "camera")
+                    Image(systemName: "binoculars")
                     Text("Capture")
                 }
             CalendarView()
