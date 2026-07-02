@@ -1,59 +1,60 @@
-//
-//  CaptureView.swift
-//  AppleECC
-//
-
 import SwiftUI
 import PhotosUI
-
-struct IdentifiableImage: Identifiable {
-    let id = UUID()
-    let image: UIImage
-}
 
 struct CaptureView: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    // Captured media
-    @State private var capturedImageItem: IdentifiableImage?
-    
     // Camera
     @State private var showCamera = false
+    @State private var cameraImage: UIImage?
     
     // Photo library
     @State private var photoPickerItem: PhotosPickerItem?
+    @State private var libraryImage: UIImage?
     
     // Audio
     @State private var showAudioRecorder = false
     
-    // Audio callback
+    // Pass result back to GardenViewModel
+    var onImageCaptured: ((UIImage) -> Void)?
     var onAudioCaptured: ((URL) -> Void)?
     
     var body: some View {
         VStack(spacing: 0) {
+            HStack {
+                ZStack {
+                    Circle()
+                        .fill(Color(hex: "7BB2D9"))
+                        .frame(width: 100, height: 100)
+                    
+                    Text("PERCH")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color(hex: "646F4B"))
+                }
+                
+                Spacer()
+            }
+            .padding(.leading, 10)
+            .padding(.top, 10)
             
-            // MARK: - Handle bar
-            RoundedRectangle(cornerRadius: 3)
-                .fill(Color(.systemGray4))
-                .frame(width: 40, height: 5)
-                .padding(.top, 12)
-                .padding(.bottom, 32)
+            Spacer()
+                .frame(maxHeight: 60)
             
-            // MARK: - Title
             Text("What did you find?")
-                .font(.title2)
-                .fontWeight(.semibold)
+                .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .foregroundStyle(.black)
                 .padding(.bottom, 8)
-            
+
             Text("Take a photo, record a bird call, or upload from your library.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 17, weight: .medium, design: .rounded))
+                .foregroundStyle(.black)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
+                .lineSpacing(4)
+                .padding(.horizontal, 34)
                 .padding(.bottom, 40)
             
-            // MARK: - Camera button
             CaptureOptionButton(
                 icon: "camera.fill",
                 label: "Take a photo",
@@ -65,7 +66,6 @@ struct CaptureView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
             
-            // MARK: - Microphone button
             CaptureOptionButton(
                 icon: "mic.fill",
                 label: "Record a sound",
@@ -76,83 +76,81 @@ struct CaptureView: View {
             }
             .padding(.horizontal, 24)
             
-            // MARK: - Divider
             HStack {
                 Rectangle()
-                    .fill(Color(.systemGray5))
-                    .frame(height: 1)
+                    .fill(.black)
+                    .frame(height: 2)
                 Text("or")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.black)
                     .padding(.horizontal, 12)
                 Rectangle()
-                    .fill(Color(.systemGray5))
-                    .frame(height: 1)
+                    .fill(.black)
+                    .frame(height: 2)
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 28)
             
-            // MARK: - Upload from library
             PhotosPicker(selection: $photoPickerItem, matching: .images) {
-                HStack(spacing: 10) {
-                    Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: 18))
-                    Text("Upload photo from library")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
+                HStack(spacing: 16) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.blue.opacity(0.28))
+                            .frame(width: 52, height: 52)
+
+                        Image(systemName: "photo.on.rectangle")
+                            .font(.system(size: 24))
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.blue.opacity(0.95))
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Upload photo")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                        Text("from library")
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.white)
+                    }
+                    
+                    Spacer()
                 }
-                .foregroundStyle(.blue)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(Color(.systemGray6))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .padding(16)
+                .background(Color(hex: "839D9A"))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(.horizontal, 24)
             }
             
             Spacer()
-            
-            // MARK: - Cancel
-            Button("Cancel") {
-                dismiss()
-            }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            .padding(.bottom, 32)
         }
-        // MARK: - Camera sheet
+        .ignoresSafeArea(.all, edges: [.top, .leading, .trailing])
         .fullScreenCover(isPresented: $showCamera) {
             CameraPickerView { image in
-                capturedImageItem = IdentifiableImage(image: image)
-                showCamera = false
+                cameraImage = image
+                onImageCaptured?(image)
+                dismiss()
             }
         }
-        // MARK: - Audio sheet
         .sheet(isPresented: $showAudioRecorder) {
             AudioRecorderView { audioURL in
                 onAudioCaptured?(audioURL)
                 dismiss()
             }
         }
-        // MARK: - Identification result sheet
-        .sheet(item: $capturedImageItem) { item in
-            IdentificationResultView(image: item.image) {
-                capturedImageItem = nil
-                dismiss()
-            }
-        }
-        // MARK: - Library photo loaded
         .onChange(of: photoPickerItem) { _, newItem in
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self),
                    let image = UIImage(data: data) {
-                    capturedImageItem = IdentifiableImage(image: image)
+                    libraryImage = image
+                    onImageCaptured?(image)
+                    dismiss()
                 }
             }
         }
     }
 }
-
-// MARK: - Reusable option button
 
 struct CaptureOptionButton: View {
     let icon: String
@@ -166,32 +164,55 @@ struct CaptureOptionButton: View {
             HStack(spacing: 16) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(color.opacity(0.15))
+                        .fill(color.opacity(0.30))
                         .frame(width: 52, height: 52)
                     Image(systemName: icon)
-                        .font(.system(size: 22))
-                        .foregroundStyle(color)
+                        .font(.system(size: 24))
+                        .fontWeight(.semibold)
+                        .foregroundStyle(color.opacity(0.95))
                 }
                 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(label)
-                        .font(.subheadline)
+                        .font(.headline)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.white)
                     Text(sublabel)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.8))
                 }
                 
                 Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
             }
             .padding(16)
-            .background(Color(.systemGray6))
+            .background(Color(hex: "839D9A"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3:
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6:
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8:
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 1)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
