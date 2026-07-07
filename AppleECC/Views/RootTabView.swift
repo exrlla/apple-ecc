@@ -7,71 +7,86 @@
 
 import SwiftUI
 
-struct RootTabView: View {
-    let backgroundColor = Color(red: 191/255, green: 210/255, blue: 191/255)
-
-    init() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.white
-        appearance.shadowColor = UIColor.clear
-
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-        UITabBar.appearance().backgroundColor = UIColor.white
-        UITabBar.appearance().isTranslucent = false
-    }
-
-    var body: some View {
-        TabView {
-            ZStack {
-                backgroundColor.ignoresSafeArea()
-                CaptureView()
-            }
-            .tabItem {
-                Image(systemName: "binoculars")
-                Text("Capture")
-            }
-
-            ZStack {
-                backgroundColor.ignoresSafeArea()
-                CalendarView()
-            }
-            .tabItem {
-                Image(systemName: "calendar")
-                Text("Calendar")
-            }
-
-            ZStack {
-                backgroundColor.ignoresSafeArea()
-                GardenView()
-            }
-            .tabItem {
-                Image(systemName: "leaf")
-                Text("Garden")
-            }
-
-            ZStack {
-                backgroundColor.ignoresSafeArea()
-                LibraryView()
-            }
-            .tabItem {
-                Image(systemName: "book")
-                Text("Library")
-            }
-        }
-        .tint(Color(hex: "646F4B"))
-        .onAppear {
-            let tabBar = UITabBar.appearance()
-            tabBar.layer.cornerRadius = 26
-            tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            tabBar.layer.masksToBounds = true
-        }
-    }
+enum AppTab {
+    case capture
+    case calendar
+    case garden
+    case library
 }
 
+struct RootTabView: View {
+    let backgroundColor = Color(hex: "AABA9E")
+    @State private var selectedTab: AppTab = .capture
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            ZStack {
+                backgroundColor.ignoresSafeArea()
+                
+                switch selectedTab {
+                case .capture:
+                    CaptureView()
+                case .calendar:
+                    CalendarView()
+                case .garden:
+                    GardenView()
+                case .library:
+                    LibraryView()
+                }
+            }
+            
+            customTabBar
+        }
+    }
+    
+    private var customTabBar: some View {
+        HStack(spacing: 0) {
+            tabButton(tab: .capture, icon: "binoculars", title: "Capture")
+            tabButton(tab: .calendar, icon: "calendar", title: "Calendar")
+            tabButton(tab: .garden, icon: "leaf", title: "Garden")
+            tabButton(tab: .library, icon: "book", title: "Library")
+        }
+        .frame(height: 43)
+        .padding(.top, 6)
+        .background(
+            UnevenRoundedRectangle(
+                topLeadingRadius: 24,
+                topTrailingRadius: 24
+            )
+            .fill(Color(hex: "839D9A"))
+            .ignoresSafeArea(edges: .bottom)
+        )
+    }
+    
+    private func tabButton(tab: AppTab, icon: String, title: String) -> some View {
+        let isSelected = selectedTab == tab
+
+        return Button {
+            selectedTab = tab
+        } label: {
+            ZStack {
+                Capsule()
+                    .fill(isSelected ? Color.white.opacity(0.95) : Color.clear)
+                    .frame(width: 76, height: 50)
+
+                VStack(spacing: 4) {
+                    Image(systemName: icon)
+                        .font(.system(size: 23, weight: .semibold))
+
+                    Text(title)
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                }
+                .foregroundStyle(isSelected ? Color(hex: "646F4B") : .white)
+            }
+            .frame(width: 82, height: 54)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, -16)
+        }
+        .buttonStyle(.plain)
+    }
+}
 
 #Preview {
     RootTabView()
 }
-
