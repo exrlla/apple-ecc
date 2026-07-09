@@ -18,4 +18,5 @@ struct IdentificationResult {
 
 protocol SpeciesIdentifier {
     func identify(image: UIImage) async throws -> IdentificationResult
+    func identifyAudio(url: URL) async throws -> IdentificationResult
 }

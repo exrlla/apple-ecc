@@ -14,12 +14,37 @@ struct SpeciesDetailView: View {
     
     let sighting: Sighting
     
-    @State private var claudeDescription: String = ""
-    @State private var isLoadingDescription = false
     @State private var showDeleteConfirm = false
     @State private var showAddLocation = false
     @State private var locationInput: String = ""
     @State private var wikipediaImageURL: URL?
+    
+    // MARK: - Hardcoded species descriptions
+    private static let speciesDescriptions: [String: String] = [
+        "Bur Oak": "The Bur Oak is one of the most iconic trees of the Midwest prairie, known for its thick, corky bark that helps it survive prairie fires. You'll spot its distinctive fringed acorn caps scattered beneath mature trees in Chicago's forest preserves, especially in fall. Some Bur Oaks in the region are over 200 years old, making them living witnesses to the city's earliest history. Look for them year-round in places like the Morton Arboretum or along the Chicago River.",
+        
+        "Elm": "Elms once lined nearly every street in Chicago, forming leafy tunnels before Dutch elm disease devastated the population in the mid-20th century. Today, disease-resistant varieties are being replanted throughout the city, and you can still find majestic old survivors in parks like Lincoln Park. Their distinctive vase-shaped canopy and serrated leaves turn a warm yellow in autumn. Elms are best appreciated in summer when their full canopy provides shade along Chicago's boulevards.",
+        
+        "Ruby-Throated Hummingbird": "The Ruby-Throated Hummingbird is the only hummingbird species commonly seen in the Chicago area, arriving each spring after an incredible non-stop flight across the Gulf of Mexico. Males flash a brilliant iridescent red throat patch when catching the light just right. Look for them from May through September, especially near gardens with tubular red or orange flowers like trumpet vine or bee balm. Feeders filled with sugar water are a great way to attract them to backyards throughout the city.",
+        
+        "Baltimore Oriole": "Named for the orange and black colors that matched Lord Baltimore's coat of arms, the Baltimore Oriole is a striking summer visitor to Chicago's parks and wooded areas. They're best spotted from late April through September, often high in tree canopies where they weave intricate hanging nests. Their flute-like whistled song is a familiar sound of Chicago springs. Try offering orange slices or grape jelly in your backyard to attract these colorful birds.",
+        
+        "Red-Winged Blackbird": "One of the most abundant birds in North America, the Red-Winged Blackbird is easily recognized by the males' bold red and yellow shoulder patches, flashed dramatically during territorial displays. They're a classic sign of spring in Chicago, arriving in marshes and wetlands as early as February and staying through fall. Listen for their distinctive conk-la-ree call near the Skokie Lagoons or along the lakefront. Females look completely different, with streaky brown plumage that helps camouflage them near their nests.",
+        
+        "Blue Jay": "The Blue Jay is a year-round Chicago resident, instantly recognizable by its vivid blue, white, and black plumage and prominent crest. Known for their intelligence, Blue Jays cache thousands of acorns each fall and are credited with helping oak forests spread across the Midwest. Their loud, jeering calls can be heard in parks and backyards throughout the city all year long. They're also skilled mimics, sometimes imitating the calls of hawks to scare off other birds from feeders.",
+        
+        "White-Throated Sparrow": "The White-Throated Sparrow passes through Chicago each spring and fall during migration, though some also spend the winter in the area. Its clear, whistled song is often remembered by the mnemonic 'Oh sweet Canada, Canada, Canada.' Look for its namesake white throat patch and yellow spot between the eye and bill while it forages on the ground in brushy areas. Forest preserves with dense understory, like those along the North Branch Trail, are great places to spot them scratching through leaf litter.",
+        
+        "Palm Warbler": "The Palm Warbler is a common migrant through Chicago each spring and fall, easily identified by its constant tail-bobbing habit as it forages low to the ground. Despite its tropical-sounding name, it actually breeds in Canadian bogs, not palm trees. Its warm rusty cap and yellow undertail feathers stand out during April and October migration windows. Lakefront parks and forest preserve edges are good spots to catch this energetic little warbler passing through.",
+        
+        "Northern Cardinal": "Illinois's state bird, the Northern Cardinal is a beloved year-round resident of Chicago, with the male's brilliant red plumage standing out dramatically against winter snow. Cardinals don't migrate, so they're a reliable sight at backyard feeders throughout every season. Females sport a more subtle reddish-brown color but share the male's distinctive crest. Their clear, whistled songs are among the first bird sounds heard on quiet Chicago mornings, even in the depths of winter.",
+        
+        "Black-Capped Chickadee": "The Black-Capped Chickadee is a cheerful year-round presence in Chicago, recognized by its black cap and bib contrasting with white cheeks. Despite their tiny size, chickadees are remarkably hardy, surviving harsh Midwest winters by caching thousands of food items each fall and recalling their locations with surprising accuracy. Their namesake chick-a-dee-dee-dee call, along with a whistled fee-bee song, is a familiar sound in parks and wooded backyards throughout the year. They're also famously curious and can sometimes be hand-fed with patience."
+    ]
+    
+    private var speciesDescription: String {
+        Self.speciesDescriptions[sighting.speciesName] ?? "No description available for this species yet."
+    }
     
     var body: some View {
         NavigationStack {
@@ -153,30 +178,16 @@ struct SpeciesDetailView: View {
                         
                         Divider()
                         
-                        // MARK: - Claude description
+                        // MARK: - Species description
                         VStack(alignment: .leading, spacing: 10) {
                             Text("About \(sighting.speciesName)")
                                 .font(.headline)
                             
-                            if isLoadingDescription {
-                                HStack(spacing: 10) {
-                                    ProgressView()
-                                    Text("Getting description...")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(.vertical, 8)
-                            } else if claudeDescription.isEmpty {
-                                Text("No description available.")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                Text(claudeDescription)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                                    .lineSpacing(5)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
+                            Text(speciesDescription)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineSpacing(5)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         
                         Divider()
@@ -227,7 +238,6 @@ struct SpeciesDetailView: View {
                 Text("This will remove \(sighting.speciesName) from your library.")
             }
             .onAppear {
-                loadDescriptionIfNeeded()
                 loadWikipediaImageIfNeeded()
             }
         }
@@ -242,56 +252,6 @@ struct SpeciesDetailView: View {
                     .font(.system(size: 48))
                     .foregroundStyle(.secondary)
             )
-    }
-    
-    // MARK: - Load Claude description
-    private func loadDescriptionIfNeeded() {
-        if let cached = sighting.cachedDescription, !cached.isEmpty {
-            claudeDescription = cached
-            return
-        }
-        
-        isLoadingDescription = true
-        
-        Task {
-            let apiKey = Bundle.main.infoDictionary?["ANTHROPIC_API_KEY"] as? String ?? ""
-            let prompt = """
-            Write a short, engaging 3-4 sentence description of the \(sighting.speciesName)
-            as it relates to Chicago and the Midwest. Include one interesting fact,
-            what season it's typically seen, and where in Chicago you might spot it.
-            Keep it friendly and conversational, like a field guide for beginners.
-            Reply with only the description, no headings or labels.
-            """
-            
-            let body: [String: Any] = [
-                "model": "claude-opus-4-6",
-                "max_tokens": 200,
-                "messages": [["role": "user", "content": prompt]]
-            ]
-            
-            var request = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue(apiKey, forHTTPHeaderField: "x-api-key")
-            request.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
-            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-            
-            if let (data, _) = try? await URLSession.shared.data(for: request),
-               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let content = (json["content"] as? [[String: Any]])?.first,
-               let text = content["text"] as? String {
-                await MainActor.run {
-                    claudeDescription = text
-                    sighting.cachedDescription = text
-                    try? modelContext.save()
-                    isLoadingDescription = false
-                }
-            } else {
-                await MainActor.run {
-                    isLoadingDescription = false
-                }
-            }
-        }
     }
     
     // MARK: - Load Wikipedia image

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1877110D3000323100830E80 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1877110C3000323100830E80 /* Config.xcconfig */; };
+		1877110F3000327000830E80 /* AppleECC.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1877110E3000327000830E80 /* AppleECC.xcconfig */; };
 		1891B4F02FF5A47E008346E4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1891B4EF2FF5A47E008346E4 /* .gitignore */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +30,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1877110B3000318B00830E80 /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
+		1877110C3000323100830E80 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		1877110E3000327000830E80 /* AppleECC.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppleECC.xcconfig; sourceTree = "<group>"; };
 		1891B4992FF306B4008346E4 /* AppleECC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppleECC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4A62FF306B6008346E4 /* AppleECCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4B02FF306B6008346E4 /* AppleECCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,11 +98,14 @@
 		1891B4902FF306B4008346E4 = {
 			isa = PBXGroup;
 			children = (
+				1877110B3000318B00830E80 /* Untitled.swift */,
 				1891B49B2FF306B4008346E4 /* AppleECC */,
 				1891B4A92FF306B6008346E4 /* AppleECCTests */,
 				1891B4B32FF306B6008346E4 /* AppleECCUITests */,
 				1891B49A2FF306B4008346E4 /* Products */,
 				1891B4EF2FF5A47E008346E4 /* .gitignore */,
+				1877110C3000323100830E80 /* Config.xcconfig */,
+				1877110E3000327000830E80 /* AppleECC.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -231,6 +239,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1877110D3000323100830E80 /* Config.xcconfig in Resources */,
+				1877110F3000327000830E80 /* AppleECC.xcconfig in Resources */,
 				1891B4F02FF5A47E008346E4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,6 +301,7 @@
 /* Begin XCBuildConfiguration section */
 		1891B4B82FF306B6008346E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -354,6 +365,7 @@
 		};
 		1891B4B92FF306B6008346E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -410,6 +422,7 @@
 		};
 		1891B4BB2FF306B6008346E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -443,6 +456,7 @@
 		};
 		1891B4BC2FF306B6008346E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

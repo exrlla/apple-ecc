@@ -6,6 +6,7 @@
 import SwiftUI
 import SwiftData
 
+@MainActor
 @Observable
 class IdentificationViewModel {
     
@@ -24,7 +25,7 @@ class IdentificationViewModel {
     
     // MARK: - Step 1: Identify the image
     func identify(image: UIImage) async {
-        guard !isIdentifying else { return }  // add this line
+        guard !isIdentifying else { return }
         isIdentifying = true
         errorMessage = nil
         result = nil
@@ -48,7 +49,6 @@ class IdentificationViewModel {
         
         let imageData = image.jpegData(compressionQuality: 0.8)
         
-        // Guess species type from name — birds vs plants
         let birdNames = [
             "Ruby-Throated Hummingbird", "Baltimore Oriole",
             "Red-Winged Blackbird", "Blue Jay",
@@ -61,6 +61,47 @@ class IdentificationViewModel {
             speciesName: result.speciesName,
             speciesType: speciesType,
             imageData: imageData,
+            confidenceLevel: result.confidence == .high ? "high" : "low"
+        )
+        
+        context.insert(sighting)
+        savedSighting = sighting
+        
+        do {
+            try context.save()
+        } catch {
+            errorMessage = "Identified but couldn't save. Please try again."
+        }
+    }
+    
+    // MARK: - Step 1b: Identify audio
+    func identifyAudio(url: URL) async {
+        guard !isIdentifying else { return }
+        isIdentifying = true
+        errorMessage = nil
+        result = nil
+        
+        do {
+            let identified = try await identifier.identifyAudio(url: url)
+            result = identified
+            showResult = true
+        } catch {
+            print("--- audio identification error: \(error)")
+            errorMessage = "Something went wrong identifying this recording. Please try again."
+        }
+        
+        isIdentifying = false
+    }
+    
+    // MARK: - Step 2b: Save audio sighting to library
+    func saveAudioToLibrary(audioURL: URL, context: ModelContext) {
+        guard let result = result else { return }
+        guard result.confidence != .notIdentified else { return }
+        
+        let sighting = Sighting(
+            speciesName: result.speciesName,
+            speciesType: .bird,
+            audioURL: audioURL.absoluteString,
             confidenceLevel: result.confidence == .high ? "high" : "low"
         )
         

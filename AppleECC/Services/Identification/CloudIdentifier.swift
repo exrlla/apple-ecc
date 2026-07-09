@@ -48,15 +48,20 @@ class CloudIdentifier: SpeciesIdentifier {
         }
     }
     
-    
+    // MARK: - Image identification (protocol-required signature)
     
     func identify(image: UIImage) async throws -> IdentificationResult {
-        print("--- identify() called")
-        print("--- api key: '\(apiKey)'")
+        try await identify(image: image, isSpectrogram: false)
+    }
+    
+    // MARK: - Shared implementation for photos and spectrograms
+    
+    private func identify(image: UIImage, isSpectrogram: Bool) async throws -> IdentificationResult {
+        print("--- identify() called, isSpectrogram: \(isSpectrogram)")
         
         // 1. Encode image to base64
         let resized = resizeImage(image, maxDimension: 512)
-        guard let imageData = resized.jpegData(compressionQuality: 0.4) else {
+        guard let imageData = resized.jpegData(compressionQuality: isSpectrogram ? 0.9 : 0.4) else {
             throw IdentifierError.imageEncodingFailed
         }
         let base64Image = imageData.base64EncodedString()
@@ -65,17 +70,35 @@ class CloudIdentifier: SpeciesIdentifier {
         
         // 2. Build the prompt
         let speciesList = chicagoSpecies.joined(separator: ", ")
-        let prompt = """
-        You are identifying Chicago-native bird and plant species only.
-        Look at this image and determine if it contains one of these species: \(speciesList).
         
-        Reply in this exact format and nothing else:
-        SPECIES: [species name or 'not identified']
-        CONFIDENCE: [high or low]
-        
-        Use 'not identified' if the image is unclear, not a species from the list,
-        or you are not reasonably sure.
-        """
+        let prompt: String
+        if isSpectrogram {
+            let birdList = chicagoSpecies.filter { !["Bur Oak", "Elm"].contains($0) }.joined(separator: ", ")
+            prompt = """
+            This image is a spectrogram (a visual representation of a bird call's frequency over time,
+            with time on the horizontal axis and frequency on the vertical axis; brighter colors mean
+            louder/stronger signal). Analyze the visual pattern — the shape, pitch range, and rhythm
+            of the markings — to determine if it matches the call of one of these Chicago-native birds: \(birdList).
+            
+            Reply in this exact format and nothing else:
+            SPECIES: [species name or 'not identified']
+            CONFIDENCE: [high or low]
+            
+            Use 'not identified' if the pattern is unclear or doesn't clearly match one of the listed species.
+            """
+        } else {
+            prompt = """
+            You are identifying Chicago-native bird and plant species only.
+            Look at this image and determine if it contains one of these species: \(speciesList).
+            
+            Reply in this exact format and nothing else:
+            SPECIES: [species name or 'not identified']
+            CONFIDENCE: [high or low]
+            
+            Use 'not identified' if the image is unclear, not a species from the list,
+            or you are not reasonably sure.
+            """
+        }
         
         // 3. Build request body
         let requestBody: [String: Any] = [
@@ -143,8 +166,22 @@ class CloudIdentifier: SpeciesIdentifier {
         return parseResponse(text)
     }
     
+    // MARK: - Audio identification
     
-    // 7. Parse Claude's structured reply into an IdentificationResult
+    func identifyAudio(url: URL) async throws -> IdentificationResult {
+        print("--- identifyAudio() called")
+        
+        // Generate a spectrogram image from the audio, since Claude's API
+        // does not accept raw audio as message content.
+        let spectrogramImage = try SpectrogramGenerator.generateSpectrogram(from: url)
+        print("--- spectrogram generated: \(spectrogramImage.size)")
+        
+        // Reuse the same identify() pipeline used for photos, but with an
+        // audio-specific prompt so Claude knows it's reading a spectrogram.
+        return try await identify(image: spectrogramImage, isSpectrogram: true)
+    }
+    
+    // MARK: - Parse Claude's structured reply into an IdentificationResult
     private func parseResponse(_ text: String) -> IdentificationResult {
         let lines = text.components(separatedBy: "\n")
         
@@ -172,6 +209,4 @@ class CloudIdentifier: SpeciesIdentifier {
         
         return IdentificationResult(speciesName: speciesName, confidence: confidence)
     }
-    
-    
 }

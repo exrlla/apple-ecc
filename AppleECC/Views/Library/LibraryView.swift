@@ -93,6 +93,8 @@ struct LibraryView: View {
 struct LibraryRowView: View {
     let sighting: Sighting
     
+    @State private var wikipediaImageURL: URL?
+    
     var body: some View {
         HStack(spacing: 14) {
             
@@ -103,27 +105,26 @@ struct LibraryRowView: View {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                } else {
-                    // Fallback: Wikipedia thumbnail
-                    AsyncImage(url: wikipediaImageURL(for: sighting.speciesName)) { phase in
+                } else if let url = wikipediaImageURL {
+                    AsyncImage(url: url) { phase in
                         switch phase {
                         case .success(let image):
                             image.resizable().scaledToFill()
                         case .failure, .empty:
-                            Rectangle()
-                                .fill(Color(.systemGray5))
-                                .overlay(
-                                    Image(systemName: sighting.speciesType == .bird ? "bird" : "leaf")
-                                        .foregroundStyle(.secondary)
-                                )
+                            fallbackIcon
                         @unknown default:
-                            Color(.systemGray6)
+                            fallbackIcon
                         }
                     }
+                } else {
+                    fallbackIcon
                 }
             }
             .frame(width: 70, height: 70)
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .task {
+                await loadWikipediaImageIfNeeded()
+            }
             
             // MARK: - Info
             VStack(alignment: .leading, spacing: 5) {
@@ -180,15 +181,34 @@ struct LibraryRowView: View {
         .padding(.vertical, 12)
         .background(Color(.systemBackground))
     }
-}
-
-// MARK: - Wikipedia image URL helper
-
-func wikipediaImageURL(for speciesName: String) -> URL? {
-    let encoded = speciesName
-        .replacingOccurrences(of: " ", with: "_")
-        .addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-    return URL(string: "https://en.wikipedia.org/api/rest_v1/page/summary/\(encoded)")
+    
+    private var fallbackIcon: some View {
+        Rectangle()
+            .fill(Color(.systemGray5))
+            .overlay(
+                Image(systemName: sighting.speciesType == .bird ? "bird" : "leaf")
+                    .foregroundStyle(.secondary)
+            )
+    }
+    
+    // MARK: - Load Wikipedia image (properly parsed, matching SpeciesDetailView)
+    private func loadWikipediaImageIfNeeded() async {
+        guard sighting.imageData == nil, wikipediaImageURL == nil else { return }
+        
+        let encoded = sighting.speciesName
+            .replacingOccurrences(of: " ", with: "_")
+            .addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        
+        guard let url = URL(string: "https://en.wikipedia.org/api/rest_v1/page/summary/\(encoded)") else { return }
+        
+        if let (data, _) = try? await URLSession.shared.data(from: url),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let thumbnail = json["thumbnail"] as? [String: Any],
+           let source = thumbnail["source"] as? String,
+           let imageURL = URL(string: source) {
+            wikipediaImageURL = imageURL
+        }
+    }
 }
 
 // MARK: - Filter pill

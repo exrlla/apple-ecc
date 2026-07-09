@@ -1,22 +1,35 @@
 import SwiftUI
 import PhotosUI
 
+// Wrapper so fullScreenCover(item:) can present based on a captured image
+struct IdentifiableImage: Identifiable {
+    let id = UUID()
+    let image: UIImage
+}
+
+// Wrapper so fullScreenCover(item:) can present based on a captured audio URL
+struct IdentifiableAudioURL: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
 struct CaptureView: View {
-    
-    @Environment(\.dismiss) private var dismiss
     
     // Camera
     @State private var showCamera = false
-    @State private var cameraImage: UIImage?
     
     // Photo library
     @State private var photoPickerItem: PhotosPickerItem?
-    @State private var libraryImage: UIImage?
     
     // Audio
     @State private var showAudioRecorder = false
     
-    // Pass result back to GardenViewModel
+    // Identification presentation state — CaptureView owns this itself
+    @State private var imageForIdentification: IdentifiableImage?
+    @State private var audioForIdentification: IdentifiableAudioURL?
+    
+    // Optional: still notify a parent if it wants to know (e.g. GardenView),
+    // but presentation no longer depends on these being set.
     var onImageCaptured: ((UIImage) -> Void)?
     var onAudioCaptured: ((URL) -> Void)?
     
@@ -137,25 +150,35 @@ struct CaptureView: View {
         .ignoresSafeArea(.all, edges: [.top, .leading, .trailing])
         .fullScreenCover(isPresented: $showCamera) {
             CameraPickerView { image in
-                cameraImage = image
                 onImageCaptured?(image)
-                dismiss()
+                imageForIdentification = IdentifiableImage(image: image)
             }
         }
         .sheet(isPresented: $showAudioRecorder) {
             AudioRecorderView { audioURL in
                 onAudioCaptured?(audioURL)
-                dismiss()
+                audioForIdentification = IdentifiableAudioURL(url: audioURL)
             }
         }
         .onChange(of: photoPickerItem) { _, newItem in
             Task {
                 if let data = try? await newItem?.loadTransferable(type: Data.self),
                    let image = UIImage(data: data) {
-                    libraryImage = image
                     onImageCaptured?(image)
-                    dismiss()
+                    imageForIdentification = IdentifiableImage(image: image)
+                } else {
+                    print("🔴 failed to load image data from picker item")
                 }
+            }
+        }
+        .fullScreenCover(item: $imageForIdentification, onDismiss: {
+            photoPickerItem = nil
+        }) { wrapped in
+            IdentificationResultView(image: wrapped.image)
+        }
+        .fullScreenCover(item: $audioForIdentification) { wrapped in
+            AudioIdentificationResultView(audioURL: wrapped.url) {
+                audioForIdentification = nil
             }
         }
     }
