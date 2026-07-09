@@ -188,12 +188,11 @@ struct SpeciesDetailView: View {
                                 Spacer()
                                 
                                 Button {
-                                    speechService.speak("\(sighting.speciesName). \(claudeDescription)")
+                                    speechService.speak("\(sighting.speciesName). \(speciesDescription)")
                                 } label: {
                                     Label("Listen", systemImage: "speaker.wave.2.fill")
                                         .font(.subheadline.weight(.semibold))
                                 }
-                                .disabled(claudeDescription.isEmpty)
                             }
                             
                             Text(speciesDescription)

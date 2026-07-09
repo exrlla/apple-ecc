@@ -36,7 +36,7 @@ struct GardenView: View {
                         .zIndex(IsoMath.zIndex(row: plot.row, col: plot.col) + 500)
                 }
             }
-            .position(x: geo.size.width / 2, y: geo.size.height * 0.3)
+            .position(x: geo.size.width / 2, y: geo.size.height * 0.5)
         }
         .ignoresSafeArea()
     }

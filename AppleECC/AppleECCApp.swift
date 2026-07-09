@@ -17,5 +17,8 @@ struct AppleECCApp: App {
             RootTabView()
                 .environmentObject(accessibilitySettings)
         }
+
+        .modelContainer(for: [Sighting.self, GardenPlot.self])
+
     }
 }

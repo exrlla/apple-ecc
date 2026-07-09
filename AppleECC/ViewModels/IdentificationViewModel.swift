@@ -19,7 +19,6 @@ class IdentificationViewModel {
     
     private var identifier: CloudIdentifier = {
         let key = Bundle.main.infoDictionary?["ANTHROPIC_API_KEY"] as? String ?? ""
-        print("--- loading API key, found: \(!key.isEmpty)")
         return CloudIdentifier(apiKey: key)
     }()
     
@@ -67,6 +66,11 @@ class IdentificationViewModel {
         context.insert(sighting)
         savedSighting = sighting
         
+        // Only birds get planted in the garden — plants don't have BirdAsset art
+        if speciesType == .bird {
+            GardenPlacement.placeBird(speciesName: result.speciesName, context: context)
+        }
+        
         do {
             try context.save()
         } catch {
@@ -107,6 +111,8 @@ class IdentificationViewModel {
         
         context.insert(sighting)
         savedSighting = sighting
+        
+        GardenPlacement.placeBird(speciesName: result.speciesName, context: context)
         
         do {
             try context.save()
