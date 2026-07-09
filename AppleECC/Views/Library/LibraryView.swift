@@ -11,6 +11,7 @@ struct LibraryView: View {
     @Query(sort: \Sighting.capturedAt, order: .reverse) private var sightings: [Sighting]
     @State private var selectedFilter: SpeciesFilter = .all
     @State private var selectedSighting: Sighting?
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     
     enum SpeciesFilter: String, CaseIterable {
         case all = "All"
@@ -29,6 +30,12 @@ struct LibraryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                Toggle("Large Bold Text", isOn: $accessibilitySettings.largeBoldText)
+                    .font(.headline)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                
+                Divider()
                 
                 // MARK: - Filter pills
                 ScrollView(.horizontal, showsIndicators: false) {

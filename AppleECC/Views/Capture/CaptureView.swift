@@ -53,10 +53,10 @@ struct CaptureView: View {
                         ZStack {
                             Text("PERCH")
                                 .offset(x: -0.6, y: 0)
-
+                            
                             Text("PERCH")
                                 .offset(x: 0.6, y: 0)
-
+                            
                             Text("PERCH")
                                 .offset(x: 0, y: 0.6)
                         }
@@ -117,25 +117,25 @@ struct CaptureView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .fill(Color.blue.opacity(0.28))
                                 .frame(width: 62, height: 62)
-
+                            
                             Image("album")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 44, height: 44)
                         }
-
+                        
                         VStack(alignment: .leading, spacing: 3) {
                             Text("Upload photo")
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
-
+                            
                             Text("from library")
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                         }
-
+                        
                         Spacer()
                     }
                     .padding(16)

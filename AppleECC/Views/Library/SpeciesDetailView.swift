@@ -18,6 +18,7 @@ struct SpeciesDetailView: View {
     @State private var showAddLocation = false
     @State private var locationInput: String = ""
     @State private var wikipediaImageURL: URL?
+    @State private var speechService = SpeechService()
     
     // MARK: - Hardcoded species descriptions
     private static let speciesDescriptions: [String: String] = [
@@ -89,8 +90,8 @@ struct SpeciesDetailView: View {
                                     .padding(.vertical, 4)
                                     .background(
                                         sighting.speciesType == .bird
-                                            ? Color.blue.opacity(0.12)
-                                            : Color.green.opacity(0.12)
+                                        ? Color.blue.opacity(0.12)
+                                        : Color.green.opacity(0.12)
                                     )
                                     .clipShape(Capsule())
                                 
@@ -180,8 +181,20 @@ struct SpeciesDetailView: View {
                         
                         // MARK: - Species description
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("About \(sighting.speciesName)")
-                                .font(.headline)
+                            HStack {
+                                Text("About \(sighting.speciesName)")
+                                    .font(.headline)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    speechService.speak("\(sighting.speciesName). \(claudeDescription)")
+                                } label: {
+                                    Label("Listen", systemImage: "speaker.wave.2.fill")
+                                        .font(.subheadline.weight(.semibold))
+                                }
+                                .disabled(claudeDescription.isEmpty)
+                            }
                             
                             Text(speciesDescription)
                                 .font(.subheadline)

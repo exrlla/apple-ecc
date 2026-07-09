@@ -37,6 +37,7 @@ struct RootTabView: View {
             
             customTabBar
         }
+        .largeBoldTextEnabled()
     }
     
     private var customTabBar: some View {
@@ -89,4 +90,5 @@ struct RootTabView: View {
 
 #Preview {
     RootTabView()
+        .environmentObject(AccessibilitySettings())
 }

@@ -10,6 +10,7 @@
 		1877110D3000323100830E80 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1877110C3000323100830E80 /* Config.xcconfig */; };
 		1877110F3000327000830E80 /* AppleECC.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1877110E3000327000830E80 /* AppleECC.xcconfig */; };
 		1891B4F02FF5A47E008346E4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1891B4EF2FF5A47E008346E4 /* .gitignore */; };
+		BF96E28E30003A3D00556FA9 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BF96E28D30003A3D00556FA9 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		1891B4A62FF306B6008346E4 /* AppleECCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4B02FF306B6008346E4 /* AppleECCUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppleECCUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1891B4EF2FF5A47E008346E4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		BF96E28D30003A3D00556FA9 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -104,8 +106,12 @@
 				1891B4B32FF306B6008346E4 /* AppleECCUITests */,
 				1891B49A2FF306B4008346E4 /* Products */,
 				1891B4EF2FF5A47E008346E4 /* .gitignore */,
+<<<<<<< Updated upstream
 				1877110C3000323100830E80 /* Config.xcconfig */,
 				1877110E3000327000830E80 /* AppleECC.xcconfig */,
+=======
+				BF96E28D30003A3D00556FA9 /* Config.xcconfig */,
+>>>>>>> Stashed changes
 			);
 			sourceTree = "<group>";
 		};
@@ -239,8 +245,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+<<<<<<< Updated upstream
 				1877110D3000323100830E80 /* Config.xcconfig in Resources */,
 				1877110F3000327000830E80 /* AppleECC.xcconfig in Resources */,
+=======
+				BF96E28E30003A3D00556FA9 /* Config.xcconfig in Resources */,
+>>>>>>> Stashed changes
 				1891B4F02FF5A47E008346E4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,7 +311,11 @@
 /* Begin XCBuildConfiguration section */
 		1891B4B82FF306B6008346E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< Updated upstream
 			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
+=======
+			baseConfigurationReference = BF96E28D30003A3D00556FA9 /* Config.xcconfig */;
+>>>>>>> Stashed changes
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -365,7 +379,11 @@
 		};
 		1891B4B92FF306B6008346E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< Updated upstream
 			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
+=======
+			baseConfigurationReference = BF96E28D30003A3D00556FA9 /* Config.xcconfig */;
+>>>>>>> Stashed changes
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -422,7 +440,11 @@
 		};
 		1891B4BB2FF306B6008346E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< Updated upstream
 			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
+=======
+			baseConfigurationReference = BF96E28D30003A3D00556FA9 /* Config.xcconfig */;
+>>>>>>> Stashed changes
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -456,7 +478,11 @@
 		};
 		1891B4BC2FF306B6008346E4 /* Release */ = {
 			isa = XCBuildConfiguration;
+<<<<<<< Updated upstream
 			baseConfigurationReference = 1877110C3000323100830E80 /* Config.xcconfig */;
+=======
+			baseConfigurationReference = BF96E28D30003A3D00556FA9 /* Config.xcconfig */;
+>>>>>>> Stashed changes
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

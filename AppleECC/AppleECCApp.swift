@@ -10,11 +10,12 @@ import SwiftData
 
 @main
 struct AppleECCApp: App {
+    @StateObject private var accessibilitySettings = AccessibilitySettings()
+
     var body: some Scene {
         WindowGroup {
             RootTabView()
-            
+                .environmentObject(accessibilitySettings)
         }
-        .modelContainer(for: Sighting.self)
     }
 }
