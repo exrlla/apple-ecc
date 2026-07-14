@@ -85,7 +85,7 @@ struct SpeciesDetailView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack(spacing: 8) {
                                 Text(sighting.speciesType == .bird ? "Bird" : "Plant")
-                                    .font(.caption)
+                                    .font(.geistPixel(12))
                                     .fontWeight(.semibold)
                                     .foregroundStyle(sighting.speciesType == .bird ? .blue : .green)
                                     .padding(.horizontal, 10)
@@ -99,7 +99,7 @@ struct SpeciesDetailView: View {
                                 
                                 if sighting.confidenceLevel == "low" {
                                     Text("Low confidence")
-                                        .font(.caption)
+                                        .font(.geistPixel(12))
                                         .foregroundStyle(.orange)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 4)
@@ -110,7 +110,7 @@ struct SpeciesDetailView: View {
                             }
                             
                             Text(sighting.speciesName)
-                                .font(.title2)
+                                .font(.geistPixel(24))
                                 .fontWeight(.bold)
                         }
                         
@@ -119,7 +119,8 @@ struct SpeciesDetailView: View {
                         // MARK: - Sighting details
                         VStack(alignment: .leading, spacing: 14) {
                             Text("Sighting details")
-                                .font(.headline)
+                                .font(.geistPixel(17))
+                                .fontWeight(.semibold)
                             
                             DetailRow(
                                 icon: "calendar",
@@ -140,18 +141,18 @@ struct SpeciesDetailView: View {
                                     .foregroundStyle(.secondary)
                                     .frame(width: 20)
                                 Text("Location")
-                                    .font(.subheadline)
+                                    .font(.geistPixel(15))
                                     .foregroundStyle(.secondary)
                                 Spacer()
                                 if let location = sighting.locationName {
                                     Text(location)
-                                        .font(.subheadline)
+                                        .font(.geistPixel(15))
                                         .fontWeight(.medium)
                                 } else {
                                     Button("Add location") {
                                         showAddLocation = true
                                     }
-                                    .font(.subheadline)
+                                    .font(.geistPixel(15))
                                     .foregroundStyle(.blue)
                                 }
                             }
@@ -185,7 +186,8 @@ struct SpeciesDetailView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Text("About \(sighting.speciesName)")
-                                    .font(.headline)
+                                    .font(.geistPixel(17))
+                                    .fontWeight(.semibold)
                                 
                                 Spacer()
                                 
@@ -193,12 +195,13 @@ struct SpeciesDetailView: View {
                                     speechService.speak("\(sighting.speciesName). \(speciesDescription)")
                                 } label: {
                                     Label("Listen", systemImage: "speaker.wave.2.fill")
-                                        .font(.subheadline.weight(.semibold))
+                                        .font(.geistPixel(15))
+                                        .fontWeight(.semibold)
                                 }
                             }
                             
                             Text(speciesDescription)
-                                .font(.subheadline)
+                                .font(.geistPixel(15))
                                 .foregroundStyle(.secondary)
                                 .lineSpacing(5)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -213,7 +216,7 @@ struct SpeciesDetailView: View {
                             HStack {
                                 Spacer()
                                 Label("Delete sighting", systemImage: "trash")
-                                    .font(.subheadline)
+                                    .font(.geistPixel(15))
                                 Spacer()
                             }
                             .padding(.vertical, 14)
@@ -229,6 +232,7 @@ struct SpeciesDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
+                        .font(.geistPixel(17))
                         .fontWeight(.semibold)
                 }
             }
@@ -307,8 +311,10 @@ struct AddLocationView: View {
             VStack(spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Where did you see this?")
-                        .font(.headline)
+                        .font(.geistPixel(17))
+                        .fontWeight(.semibold)
                     TextField("e.g. Lincoln Park, Montrose Beach...", text: $input)
+                        .font(.geistPixel(15))
                         .padding(14)
                         .background(Color(.systemGray6))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -323,12 +329,14 @@ struct AddLocationView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
+                        .font(.geistPixel(17))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
                         onSave(input)
                         dismiss()
                     }
+                    .font(.geistPixel(17))
                     .fontWeight(.semibold)
                     .disabled(input.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -351,11 +359,11 @@ struct DetailRow: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 20)
             Text(label)
-                .font(.subheadline)
+                .font(.geistPixel(15))
                 .foregroundStyle(.secondary)
             Spacer()
             Text(value)
-                .font(.subheadline)
+                .font(.geistPixel(15))
                 .fontWeight(.medium)
         }
     }

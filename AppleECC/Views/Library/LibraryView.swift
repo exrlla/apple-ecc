@@ -6,6 +6,14 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Geist Pixel font helper
+
+extension Font {
+    static func geistPixel(_ size: CGFloat) -> Font {
+        .custom("Geist Pixel", size: size)
+    }
+}
+
 struct LibraryView: View {
     
     @Environment(\.modelContext) private var modelContext
@@ -32,7 +40,7 @@ struct LibraryView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 Toggle("Large Bold Text", isOn: $accessibilitySettings.largeBoldText)
-                    .font(.headline)
+                    .font(.geistPixel(17))
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                 
@@ -64,10 +72,10 @@ struct LibraryView: View {
                             .font(.system(size: 64))
                             .foregroundStyle(.secondary.opacity(0.5))
                         Text("Nothing here yet")
-                            .font(.title3)
+                            .font(.geistPixel(20))
                             .fontWeight(.semibold)
                         Text("Identify a bird or plant to start building your library.")
-                            .font(.subheadline)
+                            .font(.geistPixel(15))
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
@@ -141,7 +149,7 @@ struct LibraryRowView: View {
             // MARK: - Info
             VStack(alignment: .leading, spacing: 5) {
                 Text(sighting.speciesName)
-                    .font(.subheadline)
+                    .font(.geistPixel(15))
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
                 
@@ -151,7 +159,7 @@ struct LibraryRowView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     Text(sighting.capturedAt.formatted(date: .abbreviated, time: .shortened))
-                        .font(.caption)
+                        .font(.geistPixel(12))
                         .foregroundStyle(.secondary)
                 }
                 
@@ -161,7 +169,7 @@ struct LibraryRowView: View {
                         .font(.caption2)
                         .foregroundStyle(sighting.locationName != nil ? .secondary : .tertiary)
                     Text(sighting.locationName ?? "No location — tap to add")
-                        .font(.caption)
+                        .font(.geistPixel(12))
                         .foregroundStyle(sighting.locationName != nil ? .secondary : .tertiary)
                         .italic(sighting.locationName == nil)
                 }
@@ -172,7 +180,7 @@ struct LibraryRowView: View {
             // Type badge + chevron
             VStack(alignment: .trailing, spacing: 8) {
                 Text(sighting.speciesType == .bird ? "Bird" : "Plant")
-                    .font(.caption2)
+                    .font(.geistPixel(11))
                     .fontWeight(.medium)
                     .foregroundStyle(sighting.speciesType == .bird ? .blue : .green)
                     .padding(.horizontal, 8)
@@ -233,7 +241,7 @@ struct FilterPill: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.subheadline)
+                .font(.geistPixel(15))
                 .fontWeight(isSelected ? .semibold : .regular)
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 16)

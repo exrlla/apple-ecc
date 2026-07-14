@@ -23,7 +23,12 @@ struct CalendarView: View {
             VStack(spacing: 24) {
                 monthHeader
                 calendarGrid
-                streakCard
+
+                HStack(spacing: 16) {
+                    streakCard
+                    wateringCanCard
+                }
+                .padding(.horizontal, 24)
             }
             .padding(.top, 16)
             .padding(.bottom, 40)
@@ -49,23 +54,10 @@ struct CalendarView: View {
 
                 Spacer()
 
-                HStack(spacing: 8) {
-                    Menu {
-                        ForEach(1...12, id: \.self) { month in
-                            Button(monthName(month)) { setMonth(month) }
-                        }
-                    } label: {
-                        pillLabel(monthName(currentMonthComponent))
-                    }
-
-                    Menu {
-                        ForEach(yearRange, id: \.self) { year in
-                            Button(String(year)) { setYear(year) }
-                        }
-                    } label: {
-                        pillLabel(String(currentYearComponent))
-                    }
-                }
+                Text(monthYearLabel)
+                    .font(.geistPixel(24))
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color(hex: "46351D"))
 
                 Spacer()
 
@@ -82,30 +74,15 @@ struct CalendarView: View {
         }
     }
 
-    private func pillLabel(_ text: String) -> some View {
-        HStack(spacing: 4) {
-            Text(text)
-                .font(.subheadline)
-                .fontWeight(.medium)
-            Image(systemName: "chevron.down")
-                .font(.caption2)
-        }
-        .foregroundStyle(.primary)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(.systemGray4), lineWidth: 1)
-        )
+    private var monthYearLabel: String {
+        displayedMonth.formatted(.dateTime.month(.wide).year())
     }
 
     private var weekdayRow: some View {
         HStack {
             ForEach(weekdaySymbols, id: \.self) { symbol in
                 Text(symbol)
-                    .font(.caption)
+                    .font(.geistPixel(12))
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
@@ -161,7 +138,7 @@ struct CalendarView: View {
                         .foregroundStyle(.white)
                 } else {
                     Text(dayNumber(date))
-                        .font(.subheadline)
+                        .font(.geistPixel(15))
                         .foregroundStyle(inCurrentMonth ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary.opacity(0.4)))
                 }
             }
@@ -185,21 +162,56 @@ struct CalendarView: View {
             }
 
             Text("\(currentStreak)")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .font(.geistPixel(32))
+                .fontWeight(.bold)
 
             Text("Waterdrop Streak")
-                .font(.subheadline)
+                .font(.geistPixel(15))
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 28)
+        .frame(minHeight: 170)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color(.systemGray4), lineWidth: 1)
         )
-        .padding(.horizontal, 24)
+    }
+
+    // MARK: - Watering can card
+
+    private var isWateringCanUnlocked: Bool {
+        currentStreak >= 3
+    }
+
+    private var wateringCanCard: some View {
+        VStack(spacing: 12) {
+            Image(isWateringCanUnlocked ? "watering_can_color" : "watering_can_bw")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+
+            Text(isWateringCanUnlocked
+                 ? "Use the watering can to water your garden!"
+                 : "Reach a 3 day streak to unlock a watering can.")
+                .font(.geistPixel(13))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(minHeight: 170)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color(.systemGray4), lineWidth: 1)
+        )
     }
 
     // MARK: - Data helpers
@@ -210,27 +222,8 @@ struct CalendarView: View {
         return allSightings.filter { $0.capturedAt >= start && $0.capturedAt < end }
     }
 
-    /// Consecutive days (walking backward from today) that have at least one
-    /// sighting, stopping at the first gap. Defines the highlighted streak.
     private var activeStreakDates: Set<Date> {
-        var streakDays: Set<Date> = []
-        var cursor = calendar.startOfDay(for: Date())
-
-        // If today has nothing yet, the streak is still alive through yesterday.
-        if sightings(on: cursor).isEmpty {
-            guard let yesterday = calendar.date(byAdding: .day, value: -1, to: cursor) else {
-                return []
-            }
-            cursor = yesterday
-        }
-
-        while !sightings(on: cursor).isEmpty {
-            streakDays.insert(cursor)
-            guard let previous = calendar.date(byAdding: .day, value: -1, to: cursor) else { break }
-            cursor = previous
-        }
-
-        return streakDays
+        StreakCalculator.activeStreakDates(sightings: allSightings, calendar: calendar)
     }
 
     private var currentStreak: Int {
@@ -239,41 +232,8 @@ struct CalendarView: View {
 
     // MARK: - Month math
 
-    private var currentMonthComponent: Int {
-        calendar.component(.month, from: displayedMonth)
-    }
-
-    private var currentYearComponent: Int {
-        calendar.component(.year, from: displayedMonth)
-    }
-
-    private var yearRange: [Int] {
-        let current = calendar.component(.year, from: Date())
-        return Array((current - 5)...current)
-    }
-
-    private func monthName(_ month: Int) -> String {
-        DateFormatter().shortMonthSymbols[month - 1]
-    }
-
     private func changeMonth(by value: Int) {
         if let newDate = calendar.date(byAdding: .month, value: value, to: displayedMonth) {
-            displayedMonth = newDate
-        }
-    }
-
-    private func setMonth(_ month: Int) {
-        var components = calendar.dateComponents([.year, .month], from: displayedMonth)
-        components.month = month
-        if let newDate = calendar.date(from: components) {
-            displayedMonth = newDate
-        }
-    }
-
-    private func setYear(_ year: Int) {
-        var components = calendar.dateComponents([.year, .month], from: displayedMonth)
-        components.year = year
-        if let newDate = calendar.date(from: components) {
             displayedMonth = newDate
         }
     }
@@ -333,10 +293,10 @@ private struct DaySightingsSheet: View {
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(sighting.speciesName)
-                                .font(.subheadline)
+                                .font(.geistPixel(15))
                                 .fontWeight(.semibold)
                             Text(sighting.speciesType == .bird ? "Bird" : (sighting.speciesType == .plant ? "Plant" : "Unknown"))
-                                .font(.caption)
+                                .font(.geistPixel(12))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -348,6 +308,7 @@ private struct DaySightingsSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }
+                        .font(.geistPixel(17))
                 }
             }
         }

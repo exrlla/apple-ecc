@@ -101,7 +101,7 @@ struct CaptureView: View {
                         .fill(Color(hex: "46351D"))
                         .frame(height: 2)
                     Text("OR")
-                        .font(.footnote)
+                        .font(.geistPixel(20))
                         .foregroundStyle(Color(hex: "46351D"))
                         .padding(.horizontal, 12)
                     Rectangle()
@@ -125,13 +125,13 @@ struct CaptureView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("Upload photo")
-                                .font(.title3)
+                            Text("Upload Photo")
+                                .font(.geistPixel(20))
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                             
                             Text("from library")
-                                .font(.title3)
+                                .font(.geistPixel(17))
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                         }
@@ -139,7 +139,7 @@ struct CaptureView: View {
                         Spacer()
                     }
                     .padding(16)
-                    .background(Color(hex: "839D9A"))
+                    .background(Color(hex: "4E6766"))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal, 24)
                 }
@@ -206,18 +206,18 @@ struct CaptureOptionButton: View {
                 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(label)
-                        .font(.title3)
+                        .font(.geistPixel(20))
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
                     Text(sublabel)
-                        .font(.body)
+                        .font(.geistPixel(16))
                         .foregroundStyle(.white.opacity(0.8))
                 }
                 
                 Spacer()
             }
             .padding(16)
-            .background(Color(hex: "839D9A"))
+            .background(Color(hex: "4E6766"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

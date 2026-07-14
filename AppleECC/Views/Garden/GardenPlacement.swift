@@ -29,7 +29,7 @@ enum GardenPlacement {
             return false // garden full
         }
         
-        let plot = GardenPlot(row: row, col: col, assetName: assetName)
+        let plot = GardenPlot(row: row, col: col, assetName: assetName, speciesName: speciesName)
         context.insert(plot)
         return true
     }
