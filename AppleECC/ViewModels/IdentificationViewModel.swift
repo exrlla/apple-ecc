@@ -43,6 +43,7 @@ class IdentificationViewModel {
     
     // MARK: - Step 2: Save to library (SwiftData)
     func saveToLibrary(image: UIImage, context: ModelContext) {
+        print("--- saveToLibrary called")
         guard let result = result else { return }
         guard result.confidence != .notIdentified else { return }
         
@@ -52,7 +53,8 @@ class IdentificationViewModel {
             "Ruby-Throated Hummingbird", "Baltimore Oriole",
             "Red-Winged Blackbird", "Blue Jay",
             "White-Throated Sparrow", "Palm Warbler",
-            "Northern Cardinal", "Black-Capped Chickadee"
+            "Northern Cardinal", "Black-Capped Chickadee",
+            "Golden Finch"
         ]
         let speciesType: Sighting.SpeciesType = birdNames.contains(result.speciesName) ? .bird : .plant
         
@@ -65,15 +67,21 @@ class IdentificationViewModel {
         
         context.insert(sighting)
         savedSighting = sighting
+        print("--- sighting inserted, about to save")
         
         // Only birds get planted in the garden — plants don't have BirdAsset art
-        if speciesType == .bird {
-            GardenPlacement.placeBird(speciesName: result.speciesName, context: context)
-        }
+        if speciesType == .bird || speciesType == .plant {
+            GardenPlacement.placeSpecies(speciesName: result.speciesName, context: context)
+                }
         
+        print("--- about to call context.save()")
         do {
+            print("--- SAVE using context: \(ObjectIdentifier(context))")
             try context.save()
+            print("--- save succeeded")
+
         } catch {
+            print("--- SAVE ERROR: \(error)")
             errorMessage = "Identified but couldn't save. Please try again."
         }
     }
@@ -117,6 +125,7 @@ class IdentificationViewModel {
         do {
             try context.save()
         } catch {
+            print("--- SAVE ERROR: \(error)")
             errorMessage = "Identified but couldn't save. Please try again."
         }
     }

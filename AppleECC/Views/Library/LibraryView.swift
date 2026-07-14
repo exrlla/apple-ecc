@@ -8,6 +8,7 @@ import SwiftData
 
 struct LibraryView: View {
     
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Sighting.capturedAt, order: .reverse) private var sightings: [Sighting]
     @State private var selectedFilter: SpeciesFilter = .all
     @State private var selectedSighting: Sighting?
@@ -91,6 +92,10 @@ struct LibraryView: View {
             .sheet(item: $selectedSighting) { sighting in
                 SpeciesDetailView(sighting: sighting)
             }
+        }
+        .onAppear {
+            print("--- LibraryView using context: \(ObjectIdentifier(modelContext))")
+            print("--- LibraryView sees \(sightings.count) sightings")
         }
     }
 }

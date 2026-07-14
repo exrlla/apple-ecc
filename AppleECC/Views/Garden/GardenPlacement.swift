@@ -3,11 +3,12 @@ import Foundation
 
 enum GardenPlacement {
     
-    /// Picks a random unoccupied cell and places the bird there.
+    /// Picks a random unoccupied cell and places a species sprite there.
+    /// Looks up the asset across both bird and plant asset maps.
     /// Returns false if the garden is full or the species has no asset mapping.
     @discardableResult
-    static func placeBird(speciesName: String, context: ModelContext) -> Bool {
-        guard let assetName = BirdAsset.assetName(for: speciesName) else {
+    static func placeSpecies(speciesName: String, context: ModelContext) -> Bool {
+        guard let assetName = resolveAssetName(for: speciesName) else {
             return false
         }
         
@@ -31,5 +32,20 @@ enum GardenPlacement {
         let plot = GardenPlot(row: row, col: col, assetName: assetName)
         context.insert(plot)
         return true
+    }
+    
+    /// Checks bird assets first, then plant assets.
+    private static func resolveAssetName(for speciesName: String) -> String? {
+        if let birdAsset = BirdAsset.assetName(for: speciesName) {
+            return birdAsset
+        }
+        return PlantAsset.assetName(for: speciesName)
+    }
+    
+    // MARK: - Backward-compatible alias
+    
+    @discardableResult
+    static func placeBird(speciesName: String, context: ModelContext) -> Bool {
+        placeSpecies(speciesName: speciesName, context: context)
     }
 }

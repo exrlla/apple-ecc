@@ -27,7 +27,8 @@ class CloudIdentifier: SpeciesIdentifier {
         "White-Throated Sparrow",
         "Palm Warbler",
         "Northern Cardinal",
-        "Black-Capped Chickadee"
+        "Black-Capped Chickadee",
+        "Golden Finch"
     ]
     
     init(apiKey: String) {

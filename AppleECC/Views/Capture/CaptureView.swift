@@ -35,10 +35,10 @@ struct CaptureView: View {
     
     var body: some View {
         ZStack {
-            VStack(spacing: 0) {
+            VStack(spacing: 10) {
                 HStack {
                     Spacer()
-                    VStack(spacing: 4) {
+                    VStack(spacing: 10) {
                         Image("logo")
                             .resizable()
                             .scaledToFill()
@@ -100,7 +100,7 @@ struct CaptureView: View {
                     Rectangle()
                         .fill(Color(hex: "46351D"))
                         .frame(height: 2)
-                    Text("or")
+                    Text("OR")
                         .font(.footnote)
                         .foregroundStyle(Color(hex: "46351D"))
                         .padding(.horizontal, 12)

@@ -17,6 +17,7 @@ enum AppTab {
 struct RootTabView: View {
     let backgroundColor = Color(hex: "AABA9E")
     @State private var selectedTab: AppTab = .capture
+    @Namespace private var glassNamespace
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -35,54 +36,53 @@ struct RootTabView: View {
                 }
             }
             
-            customTabBar
+            floatingTabBar
         }
         .largeBoldTextEnabled()
     }
     
-    private var customTabBar: some View {
-        HStack(spacing: 0) {
-            tabButton(tab: .capture, icon: "binoculars", title: "Capture")
-            tabButton(tab: .calendar, icon: "calendar", title: "Calendar")
-            tabButton(tab: .garden, icon: "leaf", title: "Garden")
-            tabButton(tab: .library, icon: "book", title: "Library")
+    private var floatingTabBar: some View {
+        GlassEffectContainer(spacing: 12) {
+            HStack(spacing: 0) {
+                tabButton(tab: .capture, icon: "binoculars", title: "Capture")
+                tabButton(tab: .calendar, icon: "calendar", title: "Calendar")
+                tabButton(tab: .garden, icon: "leaf", title: "Garden")
+                tabButton(tab: .library, icon: "book", title: "Library")
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
         }
-        .frame(height: 43)
-        .padding(.top, 6)
-        .background(
-            UnevenRoundedRectangle(
-                topLeadingRadius: 24,
-                topTrailingRadius: 24
-            )
-            .fill(Color(hex: "839D9A"))
-            .ignoresSafeArea(edges: .bottom)
-        )
+        .glassEffect(.regular, in: Capsule())
+        .padding(.horizontal, 24)
+        .padding(.bottom, 12)
     }
     
     private func tabButton(tab: AppTab, icon: String, title: String) -> some View {
         let isSelected = selectedTab == tab
 
         return Button {
-            selectedTab = tab
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                selectedTab = tab
+            }
         } label: {
             ZStack {
-                Capsule()
-                    .fill(isSelected ? Color.white.opacity(0.95) : Color.clear)
-                    .frame(width: 76, height: 50)
-
+                if isSelected {
+                    Capsule()
+                        .fill(Color(hex: "46351D"))
+                        .glassEffectID("selectedTab", in: glassNamespace)
+                }
+                
                 VStack(spacing: 4) {
                     Image(systemName: icon)
-                        .font(.system(size: 23, weight: .semibold))
+                        .font(.system(size: 21, weight: .semibold))
 
                     Text(title)
                         .font(.caption2)
                         .fontWeight(.semibold)
                 }
-                .foregroundStyle(isSelected ? Color(hex: "646F4B") : .white)
+                .foregroundStyle(isSelected ? .white : Color(hex: "46351D"))
             }
-            .frame(width: 82, height: 54)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, -16)
+            .frame(width: 68, height: 50)
         }
         .buttonStyle(.plain)
     }

@@ -40,7 +40,9 @@ struct SpeciesDetailView: View {
         
         "Northern Cardinal": "Illinois's state bird, the Northern Cardinal is a beloved year-round resident of Chicago, with the male's brilliant red plumage standing out dramatically against winter snow. Cardinals don't migrate, so they're a reliable sight at backyard feeders throughout every season. Females sport a more subtle reddish-brown color but share the male's distinctive crest. Their clear, whistled songs are among the first bird sounds heard on quiet Chicago mornings, even in the depths of winter.",
         
-        "Black-Capped Chickadee": "The Black-Capped Chickadee is a cheerful year-round presence in Chicago, recognized by its black cap and bib contrasting with white cheeks. Despite their tiny size, chickadees are remarkably hardy, surviving harsh Midwest winters by caching thousands of food items each fall and recalling their locations with surprising accuracy. Their namesake chick-a-dee-dee-dee call, along with a whistled fee-bee song, is a familiar sound in parks and wooded backyards throughout the year. They're also famously curious and can sometimes be hand-fed with patience."
+        "Black-Capped Chickadee": "The Black-Capped Chickadee is a cheerful year-round presence in Chicago, recognized by its black cap and bib contrasting with white cheeks. Despite their tiny size, chickadees are remarkably hardy, surviving harsh Midwest winters by caching thousands of food items each fall and recalling their locations with surprising accuracy. Their namesake chick-a-dee-dee-dee call, along with a whistled fee-bee song, is a familiar sound in parks and wooded backyards throughout the year. They're also famously curious and can sometimes be hand-fed with patience.",
+        
+        "Golden Finch" : "The American Goldfinch is a year-round Chicago resident, though it transforms dramatically with the seasons — breeding males turn brilliant lemon-yellow with a black cap and wings each summer, then molt into a duller olive-brown that blends in with females through fall and winter. Unlike most songbirds, goldfinches delay nesting until mid-summer, timing it to the peak availability of thistle and milkweed down for their nests. Their bouncy, undulating flight is often given away by a cheerful po-ta-to-chip call note. Look for them clinging to coneflowers and thistle heads in Chicago's prairies and gardens, where they're frequent visitors to nyjer seed feeders."
     ]
     
     private var speciesDescription: String {
@@ -242,6 +244,7 @@ struct SpeciesDetailView: View {
                 titleVisibility: .visible
             ) {
                 Button("Delete", role: .destructive) {
+                 
                     modelContext.delete(sighting)
                     dismiss()
                 }

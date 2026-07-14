@@ -3,9 +3,9 @@ import Foundation
 enum BirdAsset {
     static func assetName(for speciesName: String) -> String? {
         let mapping: [String: String] = [
-            "Ruby-Throated Hummingbird": "bluejay",
+            "Ruby-Throated Hummingbird": "ruby_throated_hummingbird",
             "Baltimore Oriole": "baltimore_oriole",
-            "Red-winged Blackbird": "red_winged_hummingbird", // matches your provided filename
+            "Red-winged Blackbird": "red_winged_blackbird", // matches your provided filename
             "Blue Jay": "bluejay",
             "American Robin": "american_robin",
             "Golden Finch": "golden_finch",
