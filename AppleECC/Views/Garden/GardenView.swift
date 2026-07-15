@@ -7,7 +7,7 @@ import SwiftUI
 import SwiftData
 
 struct GardenView: View {
-    
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     @Query private var plots: [GardenPlot]
     @Query private var sightings: [Sighting]
     
@@ -58,7 +58,8 @@ struct GardenView: View {
                 .position(x: geo.size.width / 2, y: geo.size.height * 0.5)
                 .offset(y: gardenHover ? -6 : 6)
                 .animation(
-                    .easeInOut(duration: 3.0).repeatForever(autoreverses: true),
+                    accessibilitySettings.reduceMotion ? nil :
+                            .easeInOut(duration: 3.0).repeatForever(autoreverses: true),
                     value: gardenHover
                 )
                 .onAppear {
@@ -130,7 +131,7 @@ struct GardenView: View {
     // MARK: - Watering
     
     private func startWatering() {
-        guard !isWatering else { return }
+        guard !isWatering, !accessibilitySettings.reduceMotion else { return }
         
         withAnimation(.easeIn(duration: 0.2)) {
             isWatering = true
@@ -230,6 +231,7 @@ struct PlotSpriteView: View {
     let plot: GardenPlot
     let isPlant: Bool
     var onTap: (() -> Void)? = nil
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     
     @State private var hopOffset: CGFloat = 0
     @State private var hopTask: Task<Void, Never>?
@@ -287,4 +289,5 @@ struct PlotSpriteView: View {
 #Preview {
     GardenView()
         .modelContainer(for: [GardenPlot.self, Sighting.self], inMemory: true)
+        .environmentObject(AccessibilitySettings())
 }

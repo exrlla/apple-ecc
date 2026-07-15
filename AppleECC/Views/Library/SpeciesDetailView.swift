@@ -8,7 +8,7 @@ import SwiftData
 import MapKit
 
 struct SpeciesDetailView: View {
-    
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
@@ -18,7 +18,7 @@ struct SpeciesDetailView: View {
     @State private var showAddLocation = false
     @State private var locationInput: String = ""
     @State private var wikipediaImageURL: URL?
-    @State private var speechService = SpeechService()
+    @StateObject private var speechService = SpeechService()
     
     // MARK: - Hardcoded species descriptions
     private static let speciesDescriptions: [String: String] = [
@@ -87,13 +87,13 @@ struct SpeciesDetailView: View {
                                 Text(sighting.speciesType == .bird ? "Bird" : "Plant")
                                     .font(.geistPixel(12))
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(sighting.speciesType == .bird ? .blue : .green)
+                                    .foregroundStyle(sighting.speciesType == .bird ? .blue : accessibilitySettings.accentColor)
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 4)
                                     .background(
                                         sighting.speciesType == .bird
                                         ? Color.blue.opacity(0.12)
-                                        : Color.green.opacity(0.12)
+                                        : accessibilitySettings.accentColor.opacity(0.12)
                                     )
                                     .clipShape(Capsule())
                                 

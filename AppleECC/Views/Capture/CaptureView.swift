@@ -14,6 +14,12 @@ struct IdentifiableAudioURL: Identifiable {
 }
 
 struct CaptureView: View {
+    private var buttonColor: Color {
+        accessibilitySettings.colorblindAssistMode ? Color(hex: "1F3A5F") : Color(hex: "4E6766")
+    }
+    
+    // Accessibility
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     
     // Camera
     @State private var showCamera = false
@@ -125,13 +131,13 @@ struct CaptureView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("Upload Photo")
+                            Text("Upload photo")
                                 .font(.geistPixel(20))
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                             
                             Text("from library")
-                                .font(.geistPixel(17))
+                                .font(.geistPixel(20))
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                         }
@@ -139,7 +145,7 @@ struct CaptureView: View {
                         Spacer()
                     }
                     .padding(16)
-                    .background(Color(hex: "4E6766"))
+                    .background(buttonColor)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .padding(.horizontal, 24)
                 }
@@ -191,6 +197,8 @@ struct CaptureOptionButton: View {
     let color: Color
     let action: () -> Void
     
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
+    
     var body: some View {
         Button(action: action) {
             HStack(spacing: 16) {
@@ -217,7 +225,7 @@ struct CaptureOptionButton: View {
                 Spacer()
             }
             .padding(16)
-            .background(Color(hex: "4E6766"))
+            .background(accessibilitySettings.colorblindAssistMode ? Color(hex: "1F3A5F") : Color(hex: "4E6766"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

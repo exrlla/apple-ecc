@@ -29,7 +29,7 @@ struct AudioIdentificationResultView: View {
                 HStack(spacing: 3) {
                     ForEach(Array(waveformHeights.enumerated()), id: \.offset) { _, height in
                         RoundedRectangle(cornerRadius: 2)
-                            .fill(Color.orange.opacity(isPlaying ? 0.8 : 0.5))
+                            .fill(Color(hex: "7BB2D9").opacity(isPlaying ? 0.9 : 0.55))
                             .frame(width: 4, height: height)
                             .animation(.easeInOut(duration: 0.3), value: isPlaying)
                     }
@@ -42,24 +42,33 @@ struct AudioIdentificationResultView: View {
                 } label: {
                     ZStack {
                         Circle()
-                            .fill(Color.orange.opacity(0.15))
-                            .frame(width: 72, height: 72)
+                            .fill(Color(hex: "46351D").opacity(0.08))
+                            .frame(width: 80, height: 80)
+                            .offset(x: 3, y: 3)
                         Circle()
-                            .fill(Color.orange)
-                            .frame(width: 56, height: 56)
+                            .stroke(Color(hex: "46351D"), lineWidth: 2.5)
+                            .fill(Color(hex: "7BB2D9"))
+                            .frame(width: 80, height: 80)
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 22))
+                            .font(.system(size: 26, weight: .bold))
                             .foregroundStyle(.white)
                     }
                 }
                 
                 Text("Bird call recording")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.geistPixel(18))
+                    .fontWeight(.bold)
+                    .foregroundStyle(.black)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 32)
-            .background(Color(.systemGray6))
+            .padding(.vertical, 36)
+            .background(
+                LinearGradient(
+                    colors: [Color(hex: "EAF2F7"), Color(hex: "D8E7EF")],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
             
             ScrollView {
                 VStack(spacing: 24) {
@@ -69,9 +78,11 @@ struct AudioIdentificationResultView: View {
                         VStack(spacing: 16) {
                             ProgressView()
                                 .scaleEffect(1.4)
+                                .tint(Color(hex: "7BB2D9"))
                             Text("Identifying bird call...")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .font(.geistPixel(17))
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.black)
                         }
                         .padding(.top, 40)
                     }
@@ -81,56 +92,60 @@ struct AudioIdentificationResultView: View {
                         VStack(spacing: 8) {
                             
                             if result.confidence == .notIdentified {
-                                // Not identified
                                 Image(systemName: "questionmark.circle")
                                     .font(.system(size: 48))
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color(hex: "46351D").opacity(0.4))
                                     .padding(.top, 24)
                                 
                                 Text("Couldn't identify this call")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
+                                    .font(.geistPixel(20))
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.black)
                                 
                                 Text("Try recording in a quieter environment with the bird call clearly audible.")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                    .font(.geistPixel(16))
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.black)
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 32)
                                 
-                                Button("Try again") {
+                                Button {
                                     onDismissSheet?()
+                                } label: {
+                                    Text("Try again")
+                                        .font(.geistPixel(17))
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 32)
+                                        .padding(.vertical, 14)
+                                        .background(Color(hex: "7BB2D9"))
+                                        .clipShape(Capsule())
                                 }
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 32)
-                                .padding(.vertical, 14)
-                                .background(Color.orange)
-                                .clipShape(Capsule())
                                 .padding(.top, 8)
                                 
                             } else {
                                 // Successfully identified
                                 VStack(spacing: 6) {
                                     Text("Found it!")
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(.green)
+                                        .font(.geistPixel(14))
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(Color(hex: "4E8F5C"))
                                         .padding(.top, 24)
                                     
                                     Text(result.speciesName)
-                                        .font(.title2)
+                                        .font(.geistPixel(23))
                                         .fontWeight(.bold)
+                                        .foregroundStyle(.black)
                                         .multilineTextAlignment(.center)
                                     
-                                    // Confidence badge
                                     HStack(spacing: 4) {
                                         Circle()
-                                            .fill(result.confidence == .high ? Color.green : Color.orange)
+                                            .fill(result.confidence == .high ? Color(hex: "4E8F5C") : Color(hex: "D08C3A"))
                                             .frame(width: 7, height: 7)
                                         Text(result.confidence == .high ? "High confidence" : "Low confidence")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .font(.geistPixel(13))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(Color(hex: "46351D").opacity(0.7))
                                     }
                                 }
                                 
@@ -139,23 +154,26 @@ struct AudioIdentificationResultView: View {
                                     VStack(spacing: 8) {
                                         Image(systemName: "checkmark.circle.fill")
                                             .font(.system(size: 36))
-                                            .foregroundStyle(.green)
+                                            .foregroundStyle(Color(hex: "4E8F5C"))
                                         Text("Added to your library!")
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                            .font(.geistPixel(16))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.black)
                                     }
                                     .padding(.top, 8)
                                     
-                                    Button("Done") {
+                                    Button {
                                         onDismissSheet?()
+                                    } label: {
+                                        Text("Done")
+                                            .font(.geistPixel(17))
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(.white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 16)
+                                            .background(Color(hex: "4E8F5C"))
+                                            .clipShape(RoundedRectangle(cornerRadius: 14))
                                     }
-                                    .font(.subheadline)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .background(Color.green)
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
                                     .padding(.horizontal, 24)
                                     .padding(.top, 8)
                                     
@@ -168,21 +186,24 @@ struct AudioIdentificationResultView: View {
                                             Image(systemName: "plus.circle.fill")
                                             Text("Add to library")
                                         }
-                                        .font(.subheadline)
-                                        .fontWeight(.semibold)
+                                        .font(.geistPixel(17))
+                                        .fontWeight(.bold)
                                         .foregroundStyle(.white)
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 16)
-                                        .background(Color.green)
+                                        .background(Color(hex: "7BB2D9"))
                                         .clipShape(RoundedRectangle(cornerRadius: 14))
-                                        .padding(.horizontal, 24)
                                     }
+                                    .padding(.horizontal, 24)
                                     
-                                    Button("Try again") {
+                                    Button {
                                         onDismissSheet?()
+                                    } label: {
+                                        Text("Try again")
+                                            .font(.geistPixel(16))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.black.opacity(0.6))
                                     }
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -190,21 +211,30 @@ struct AudioIdentificationResultView: View {
                     
                     // MARK: - Error state
                     if let error = viewModel.errorMessage {
-                        VStack(spacing: 12) {
+                        VStack(spacing: 14) {
                             Image(systemName: "exclamationmark.triangle")
-                                .font(.system(size: 36))
-                                .foregroundStyle(.orange)
+                                .font(.system(size: 44, weight: .bold))
+                                .foregroundStyle(Color(hex: "D08C3A"))
                                 .padding(.top, 24)
                             Text(error)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .font(.geistPixel(18))
+                                .fontWeight(.bold)
+                                .foregroundStyle(.black)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 32)
-                            Button("Try again") {
+                            Button {
                                 onDismissSheet?()
+                            } label: {
+                                Text("Try again")
+                                    .font(.geistPixel(17))
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 32)
+                                    .padding(.vertical, 14)
+                                    .background(Color(hex: "7BB2D9"))
+                                    .clipShape(Capsule())
                             }
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .padding(.top, 4)
                         }
                     }
                 }
@@ -218,7 +248,7 @@ struct AudioIdentificationResultView: View {
                     onDismissSheet?()
                 } label: {
                     Image(systemName: "xmark")
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color(hex: "46351D"))
                 }
             }
         }

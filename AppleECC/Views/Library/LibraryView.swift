@@ -15,7 +15,21 @@ extension Font {
 }
 
 struct LibraryView: View {
-    
+    private var backgroundGradient: LinearGradient {
+        if accessibilitySettings.colorblindAssistMode {
+            LinearGradient(
+                colors: [Color(hex: "CFE0F0"), Color(hex: "9DBEDD"), Color(hex: "6E93B8")],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        } else {
+            LinearGradient(
+                colors: [Color(hex: "D3DDC8"), Color(hex: "AABA9E"), Color(hex: "7E9374")],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
+    }
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Sighting.capturedAt, order: .reverse) private var sightings: [Sighting]
     @State private var selectedFilter: SpeciesFilter = .all
@@ -39,13 +53,15 @@ struct LibraryView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                Toggle("Large Bold Text", isOn: $accessibilitySettings.largeBoldText)
-                    .font(.geistPixel(17))
+                Text("Library")
+                    .font(.geistPixel(32))
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color(hex: "46351D"))
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
                 Divider()
-                
                 // MARK: - Filter pills
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -66,37 +82,39 @@ struct LibraryView: View {
                 
                 if filteredSightings.isEmpty {
                     // MARK: - Empty state
-                    VStack(spacing: 16) {
-                        Spacer()
-                        Image(systemName: "leaf.circle")
-                            .font(.system(size: 64))
-                            .foregroundStyle(.secondary.opacity(0.5))
-                        Text("Nothing here yet")
-                            .font(.geistPixel(20))
-                            .fontWeight(.semibold)
-                        Text("Identify a bird or plant to start building your library.")
-                            .font(.geistPixel(15))
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                        Spacer()
-                    }
+                    VStack(spacing: 18) {
+                            Image(systemName: "leaf.circle")
+                                .font(.system(size: 64))
+                                .foregroundStyle(Color(hex: "46351D").opacity(0.5))
+                            Text("Nothing here yet")
+                                .font(.geistPixel(22))
+                                .fontWeight(.bold)
+                                .foregroundStyle(.black)
+                            Text("Identify a bird or plant to start building your library.")
+                                .font(.geistPixel(16))
+                                .fontWeight(.medium)
+                                .foregroundStyle(.black)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 40)
+                            Spacer()
+                        }
+                        .padding(.top, 60)
                 } else {
                     // MARK: - Sightings list
                     ScrollView {
-                        LazyVStack(spacing: 1) {
-                            ForEach(filteredSightings) { sighting in
-                                LibraryRowView(sighting: sighting)
-                                    .onTapGesture {
-                                        selectedSighting = sighting
+                        LazyVStack(spacing: 12) {
+                                ForEach(filteredSightings) { sighting in
+                                    LibraryRowView(sighting: sighting)
+                                        .onTapGesture { selectedSighting = sighting
                                     }
                             }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
                     }
                 }
             }
-            .navigationTitle("Library")
-            .navigationBarTitleDisplayMode(.large)
+            .background(backgroundGradient.ignoresSafeArea())
             .sheet(item: $selectedSighting) { sighting in
                 SpeciesDetailView(sighting: sighting)
             }
@@ -114,6 +132,7 @@ struct LibraryRowView: View {
     let sighting: Sighting
     
     @State private var wikipediaImageURL: URL?
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
     
     var body: some View {
         HStack(spacing: 14) {
@@ -182,13 +201,13 @@ struct LibraryRowView: View {
                 Text(sighting.speciesType == .bird ? "Bird" : "Plant")
                     .font(.geistPixel(11))
                     .fontWeight(.medium)
-                    .foregroundStyle(sighting.speciesType == .bird ? .blue : .green)
+                    .foregroundStyle(sighting.speciesType == .bird ? .blue : accessibilitySettings.accentColor)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
                     .background(
                         sighting.speciesType == .bird
-                            ? Color.blue.opacity(0.12)
-                            : Color.green.opacity(0.12)
+                        ? Color.blue.opacity(0.12)
+                        : accessibilitySettings.accentColor.opacity(0.12)
                     )
                     .clipShape(Capsule())
                 
@@ -197,9 +216,11 @@ struct LibraryRowView: View {
                     .foregroundStyle(.tertiary)
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
         .padding(.vertical, 12)
         .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 3)
     }
     
     private var fallbackIcon: some View {
@@ -238,6 +259,8 @@ struct FilterPill: View {
     let isSelected: Bool
     let action: () -> Void
     
+    @EnvironmentObject var accessibilitySettings: AccessibilitySettings
+    
     var body: some View {
         Button(action: action) {
             Text(label)
@@ -246,7 +269,7 @@ struct FilterPill: View {
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(isSelected ? Color.green : Color(.systemGray6))
+                .background(isSelected ? accessibilitySettings.accentColor : Color(.systemGray6))
                 .clipShape(Capsule())
         }
     }
